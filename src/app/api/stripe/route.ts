@@ -8,10 +8,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 export async function GET() {
   try {
     // Fetch last 10 payments
-    const payments = await stripe.paymentIntents.list({ limit: 10 });
+    const payments = await stripe.paymentIntents.list({ limit: 100 });
     
     // Fetch all customers
-    const customers = await stripe.customers.list({ limit: 10 });
+    const customers = await stripe.customers.list({ limit: 100 });
 
     // Get detailed payment data
     const detailedPayments = await Promise.all(
