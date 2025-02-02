@@ -2,16 +2,14 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
- 
+  // make sure to use the latest API version
 });
 
 export async function GET() {
   try {
-    // Fetch last 10 payments
-    const payments = await stripe.paymentIntents.list({ limit: 100 });
-    
-    // Fetch all customers
-    const customers = await stripe.customers.list({ limit: 100 });
+    // Fetch a smaller number of records (e.g., 10)
+    const payments = await stripe.paymentIntents.list({ limit: 10 });
+    const customers = await stripe.customers.list({ limit: 10 });
 
     // Get detailed payment data
     const detailedPayments = await Promise.all(

@@ -10,10 +10,25 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
-    fetch("/api/stripe")
-      .then((res) => res.json())
-      .then((data) => setData(data))
-      .catch((err) => console.error("Error fetching Stripe data:", err));
+    // Function to fetch data from the backend
+    const fetchData = async () => {
+      try {
+        const res = await fetch("/api/stripe");
+        if (!res.ok) throw new Error("Failed to fetch data");
+        const data = await res.json();
+        setData(data);
+      } catch (err) {
+        console.error("Error fetching Stripe data:", err);
+      }
+    };
+
+    fetchData();
+
+    // Polling with a delay of 30 seconds to refresh the data
+    const interval = setInterval(fetchData, 30000); // every 30 seconds
+
+    // Cleanup on component unmount
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -28,7 +43,10 @@ export default function Dashboard() {
             <tr className="bg-blue-500 text-white">
               <th className="border p-3">Customer</th>
               <th className="border p-3">Email</th>
-          
+              <th className="border p-3">Phone</th>
+              <th className="border p-3">Address</th>
+              <th className="border p-3">Amount</th>
+              <th className="border p-3">Status</th>
               <th className="border p-3">Receipt</th>
             </tr>
           </thead>
