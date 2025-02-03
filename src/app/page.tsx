@@ -10,10 +10,9 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
-    // Function to fetch data from the backend
     const fetchData = async () => {
       try {
-        const res = await fetch("/api/stripe");
+        const res = await fetch("/api/stripe", { cache: "no-store" }); // Ensure fresh data
         if (!res.ok) throw new Error("Failed to fetch data");
         const data = await res.json();
         setData(data);
@@ -25,9 +24,8 @@ export default function Dashboard() {
     fetchData();
 
     // Polling with a delay of 30 seconds to refresh the data
-    const interval = setInterval(fetchData, 30000); // every 30 seconds
+    const interval = setInterval(fetchData, 30000);
 
-    // Cleanup on component unmount
     return () => clearInterval(interval);
   }, []);
 
@@ -52,8 +50,8 @@ export default function Dashboard() {
           </thead>
           <tbody className="bg-white">
             {data.payments.length > 0 ? (
-              data.payments.map((payment) => (
-                <tr key={payment.id} className="border">
+              data.payments.map((payment, index) => (
+                <tr key={`${payment.id}-${index}`} className="border">
                   <td className="border p-3">{payment.customer}</td>
                   <td className="border p-3 flex items-center gap-2">
                     <Mail className="w-5 h-5 text-gray-500" /> {payment.email}
